@@ -1,8 +1,9 @@
-const fs = require("fs");
-const { listenerCount } = require("process");
-const basePath = process.cwd();
-const { createCanvas, loadImage } = require(`${basePath}/node_modules/canvas`);
-const buildDir = `${basePath}/build`;
+const fs = require("fs")
+const crypto = require("crypto")
+const { listenerCount } = require("process")
+const basePath = process.cwd()
+const { createCanvas, loadImage } = require(`${basePath}/node_modules/canvas`)
+const buildDir = `${basePath}/public/build`
 
 const format = {
     width: 512,
@@ -21,7 +22,7 @@ const background = {
     default: "#000000",
 };
 
-const drawBackground = () => {
+const drawBackground = async () => {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, format.width, format.height);
 };
@@ -43,14 +44,21 @@ const DrawImage = async (image) => {
     )
 }
 
-const Combine = async (_hatName, _petName) => {
+const Combine = async (objectList) => {
     ctx.clearRect(0, 0, format.width, format.height);
-    var petImage = await loadImage(`${basePath}/image/${_petName}.png`)
-    var hatImage = await loadImage(`${basePath}/image/${_hatName}.png`)
     await drawBackground()
-    await DrawImage(petImage)
-    await DrawImage(hatImage)
-    await saveImage('done')
+    for (let i = 0; i < objectList.length; i++) {
+        var image = await loadImage(`${basePath}/public/image/${objectList[i]}.png`)
+        await DrawImage(image)
+    }
+    var name = GetRandomName()
+    await saveImage(name)
+    return name
+}
+
+const GetRandomName = () => {
+    var randomString = crypto.randomBytes(32).toString('hex').substr(0, 8)
+    return randomString
 }
 
 module.exports = { Combine }
