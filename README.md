@@ -23,26 +23,48 @@ npm run server
 
 ```json
 {
-    "hatName":"hat_1",
-    "petName":"pet_2"
+    "hand": "hand_0",
+    "hat" : "hat_1",
+    "glasses" : "none",
+    "cloth" : "cloth_0",
+    "pant" : "none",
+    "pet" : "pet_1"
 }
+
 ```
 
 ### 回傳
 
 ```json
 {
-    "name": "test_name",
-    "description": "test_description",
-    "image": "https://ipfs.io/ipfs/QmXnXu4Qp7MzNx9oJkfgbpRnKUpTe1CKeVme8yZmAo2jyj",
+    "name": "nft_pet",
+    "description": "this is cool",
+    "image": "https://ipfs.io/ipfs/QmTy4MZftZcDq1ZVMoS6iJF7Q7pp39nVCPKeLQ9WbY8bYB",
+    "local_image": "http://localhost:8001/build/e068cc57.png",
     "attributes": [
         {
-            "trait_type": "Hat",
+            "trait_type": "hand",
+            "value": "hand_0"
+        },
+        {
+            "trait_type": "hat",
             "value": "hat_1"
         },
         {
-            "trait_type": "Pet",
-            "value": "pet_2"
+            "trait_type": "glasses",
+            "value": "none"
+        },
+        {
+            "trait_type": "cloth",
+            "value": "cloth_0"
+        },
+        {
+            "trait_type": "pant",
+            "value": "none"
+        },
+        {
+            "trait_type": "pet",
+            "value": "pet_1"
         }
     ]
 }

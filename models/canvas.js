@@ -19,11 +19,11 @@ const background = {
     generate: true,
     brightness: "80%",
     static: false,
-    default: "#000000",
+    default: "#FFFFFF",
 };
 
 const drawBackground = async () => {
-    ctx.fillStyle = background;
+    ctx.fillStyle = "white";
     ctx.fillRect(0, 0, format.width, format.height);
 };
 

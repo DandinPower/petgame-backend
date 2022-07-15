@@ -1,26 +1,12 @@
+require('dotenv').config()
 const express = require('express')
 const basePath = process.cwd();
 const { UploadFileToIpfs } = require(`${basePath}/models/ipfs`)
 const { Combine } = require(`${basePath}/models/canvas`)
+const { AddAttributeToList } = require(`${basePath}/models/function`)
 const router = express.Router()
-require('dotenv').config()
 const ipAddress = process.env.IP_ADDRESS
 const port = process.env.PORT
-const saveMetadata = (data, name) => {
-    fs.writeFileSync(
-        `${buildDir}/${name}.json`,
-        JSON.stringify(data, null, 2)
-    );
-}
-
-const AddAttributeToList = (list, trait, value) => {
-    let temp = {
-        "trait_type": trait,
-        "value": value
-    }
-    list.push(temp)
-    return list
-}
 
 router.post('/', async (req, res, next) => {
     var hand = req.body.hand
@@ -39,8 +25,8 @@ router.post('/', async (req, res, next) => {
     attributesList = AddAttributeToList(attributesList, 'pant', pant)
     attributesList = AddAttributeToList(attributesList, 'pet', pet)
     let tempMetadata = {
-        name: 'test_name',
-        description: 'test_description',
+        name: 'nft_pet',
+        description: 'this is cool',
         image: ipfs_path,
         local_image: `http://${ipAddress}:${port}/build/${localPath}.png`,
         attributes: attributesList,
