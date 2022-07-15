@@ -9,7 +9,7 @@ const InsertData = async (className, newObjectJson) => {
     const Class = Moralis.Object.extend(className)
     const newClass = new Class()
     for (var attributename in newObjectJson) {
-        newClass.set(attributename, object[attributename])
+        newClass.set(attributename, newObjectJson[attributename])
     }
     await newClass.save()
 }

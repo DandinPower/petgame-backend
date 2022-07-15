@@ -8,8 +8,8 @@ const UploadFileToIpfs = async (filename) => {
     await ipfs.add(buffile).then((fileinfo) => {
         path = "https://ipfs.io/ipfs/" + fileinfo[0].hash
     })
+    console.log(path)
     return path
 }
 
 module.exports = { UploadFileToIpfs }
-
