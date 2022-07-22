@@ -10,6 +10,24 @@ brew install pkg-config cairo pango libpng jpeg giflib librsvg
 npm install
 ```
 
+### 建立環境變數
+
+- 建立.env
+
+```bash
+touch .env
+```
+
+- 新增以下參數
+
+```
+DAPP_URL = <Moralis給的>
+APP_ID = <Moralis給的>
+MASTER_KEY = <Moralis給的>
+IP_ADDRESS = <伺服器的ip位置>
+PORT = <伺服器的PORT>
+```
+
 ### 運行Server
 
 ```bash
@@ -28,9 +46,9 @@ npm run server
     "glasses" : "none",
     "cloth" : "cloth_0",
     "pant" : "none",
-    "pet" : "pet_1"
+    "pet" : "pet_1",
+    "tokenId" : 0
 }
-
 ```
 
 ### 回傳
@@ -38,9 +56,10 @@ npm run server
 ```json
 {
     "name": "nft_pet",
-    "description": "this is cool",
+    "description": "it is a cool pet",
+    "token_id": 0,
     "image": "https://ipfs.io/ipfs/QmTy4MZftZcDq1ZVMoS6iJF7Q7pp39nVCPKeLQ9WbY8bYB",
-    "local_image": "http://localhost:8001/build/e068cc57.png",
+    "local_image": "http://localhost:8001/build/0.png",
     "attributes": [
         {
             "trait_type": "hand",

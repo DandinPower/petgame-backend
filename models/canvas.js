@@ -5,51 +5,60 @@ const { listenerCount } = require("process")
 const basePath = process.cwd()
 const { createCanvas, loadImage } = require(`${basePath}/node_modules/canvas`)
 const { UploadFileToIpfs } = require(`${basePath}/models/ipfs`)
-const { AddAttributeToList } = require(`${basePath}/models/function`)
+const { AddAttributeToList, GetAttributeList, GetRandomFromList, GetRandomItemList, GetRandomName, Wait } = require(`${basePath}/models/function`)
 const buildDir = `${basePath}/public/build`
+const componentDir = `${basePath}/public/image`
+const componentIpfs = {
+    'cloth_0': 'https://ipfs.io/ipfs/QmYZzxgkb5st8h6JDyYym3uuHxeNtWcxQ68FEDxBWQbEKj',
+    'cloth_1': 'https://ipfs.io/ipfs/QmVFM3NVyhQwSpoUfvi9tvQdY2Cip3XU82Tj3Y3GhfXow3',
+    'glasses_0': 'https://ipfs.io/ipfs/QmWvbcRVUG49DHhzDo61FdeGhZhj1fxjBkeYP5bWiWTrAY',
+    'glasses_1': 'https://ipfs.io/ipfs/QmZJugaT5jqaMv8zLZeR2hRzknm33yGo6Q2p8UAU1E84jr',
+    'hand_0': 'https://ipfs.io/ipfs/QmfFqHZnMEiS9fbSENadjppSHgMmFYX5FhjNsEDtdTzHNj',
+    'hand_1': 'https://ipfs.io/ipfs/Qmd6zBhXzUn4VBiXDLTWgsLuUHM276MKg38sRCfVc2sqfm',
+    'hat_0': 'https://ipfs.io/ipfs/QmVxvawprLNnYX6mRUxMoFsCVreh59qeocLJLVAVBJr37s',
+    'hat_1': 'https://ipfs.io/ipfs/QmV8EeENBbaMDtT6P3RGtwNEKpzg9kEFeDgCJ5ZGMkxqB8',
+    'none': 'https://ipfs.io/ipfs/QmSNZs6NQpbQccdrtXpmrRp2BmhWThvLsHgrHbAnEBFiH1',
+    'pant_0': 'https://ipfs.io/ipfs/QmV3iX4NJYHoHcMSdL55NCMLjm5X3v2E63exPsJortFUsf',
+    'pant_1': 'https://ipfs.io/ipfs/QmQZKpxMK2wJ57Cq5yxMhqDXDUg4foR9coCFpN91rBB4nH',
+    'pet_0': 'https://ipfs.io/ipfs/QmRGhsSspxKnwpDCRYCWw7g7WznCyuApcx1VqkWGiyXSny',
+    'pet_1': 'https://ipfs.io/ipfs/QmUhoCfGLJ317i7j5pa3nVbQYC7gYTGj7jqG1iuypp2W9A'
+}
 const ipAddress = process.env.IP_ADDRESS
 const port = process.env.PORT
 
+///canvas參數
 const format = {
     width: 512,
     height: 512,
     smoothing: false,
 };
-
 const canvas = createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = format.smoothing;
 
-const background = {
-    generate: true,
-    brightness: "80%",
-    static: false,
-    default: "#FFFFFF",
-};
-
-const drawBackground = async () => {
+//繪製canvas背景
+const DrawBackground = async () => {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, format.width, format.height);
 };
 
-const saveImage = async (name) => {
+//將目前的canvas圖檔存成png圖片
+const SaveImage = async (_name) => {
     await fs.writeFileSync(
-        `${buildDir}/${name}.png`,
+        `${buildDir}/${_name}.png`,
         canvas.toBuffer("image/png")
     );
 };
 
-const saveMetadata = async (data, name) => {
+//將json object儲存成json檔
+const SaveMetadata = async (_data, _name) => {
     await fs.writeFileSync(
-        `${buildDir}/${name}.json`,
-        JSON.stringify(data, null, 2)
+        `${buildDir}/${_name}.json`,
+        JSON.stringify(_data, null, 2)
     );
 }
 
-const wait = (ms) => {
-    return new Promise(resolve => setTimeout(() => resolve(), ms));
-};
-
+//將圖片buffer畫進canvas
 const DrawImage = async (image) => {
     await ctx.drawImage(
         image,
@@ -60,82 +69,104 @@ const DrawImage = async (image) => {
     )
 }
 
-const Combine = async (objectList) => {
+//NFT本體的metadata預設值
+const GetNFTMetadata = (_name, _description, _tokenId, _image, _localImage, _attributesList) => {
+    let tempMetadata = {
+        name: _name,
+        description: _description,
+        token_id: _tokenId,
+        image: _image,
+        local_image: _localImage,
+        attributes: _attributesList,
+    };
+    return tempMetadata
+}
+
+//NFT配件的metadata預設值
+const GetComponentsMetadata = (_name, _description, _tokenId, _image, _localImage) => {
+    let tempMetadata = {
+        name: _name,
+        description: _description,
+        token_id: _tokenId,
+        image: _image,
+        local_image: _localImage
+    };
+    return tempMetadata
+}
+
+//回傳public/build的express圖片地址
+const GetBuildImagePath = (_localPath) => {
+    return `http://${ipAddress}:${port}/build/${_localPath}.png`
+}
+
+//回傳public/image的express圖片地址
+const GetPublicImagePath = (_localPath) => {
+    return `http://${ipAddress}:${port}/image/${_localPath}.png`
+}
+
+//根據給定的objectList生成圖片
+const Combine = async (_objectList, name) => {
     ctx.clearRect(0, 0, format.width, format.height);
-    await drawBackground()
-    for (let i = 0; i < objectList.length; i++) {
-        var image = await loadImage(`${basePath}/public/image/${objectList[i]}.png`)
+    await DrawBackground()
+    for (let i = 0; i < _objectList.length; i++) {
+        var image = await loadImage(`${basePath}/public/image/${_objectList[i]}.png`)
         await DrawImage(image)
     }
-    var name = GetRandomName()
-    await saveImage(name)
-    return name
+    await SaveImage(name)
 }
 
-const GetRandomName = () => {
-    var randomString = crypto.randomBytes(32).toString('hex').substr(0, 8)
-    return randomString
-}
-
-const GetRandomFromList = (_list) => {
-    return _list[Math.floor(Math.random() * _list.length)];
-}
-
-const GetRandomItemList = () => {
-    var handList = ['hand_0', 'hand_1', 'none']
-    var hatList = ['hat_0', 'hat_1', 'none']
-    var glassesList = ['glasses_0', 'glasses_1', 'none']
-    var clothList = ['cloth_0', 'cloth_1', 'none']
-    var pantList = ['pant_0', 'pant_1', 'none']
-    var petList = ['pet_0', 'pet_1']
-    return [GetRandomFromList(petList), GetRandomFromList(pantList), GetRandomFromList(clothList), GetRandomFromList(glassesList), GetRandomFromList(hatList), GetRandomFromList(handList)]
-}
-
-const GetRandomNFT = async (_generateNums) => {
-    for (let i = 0; i < _generateNums; i++) {
+//產生隨機的nft以及其配件
+const GetRandomNFT = async (_tokenStart, _tokenEnd, _nftTotal, _componentStartIndex) => {
+    var currentComponentStartIndex = _componentStartIndex
+    for (let i = _tokenStart; i < _tokenEnd; i++) {
         var randomItemList = GetRandomItemList()
-        var localPath = await Combine(randomItemList)
-        let ipfs_path = await UploadFileToIpfs(`${basePath}/public/build/${localPath}.png`)
-        let attributesList = []
-        attributesList = AddAttributeToList(attributesList, 'hand', randomItemList[5])
-        attributesList = AddAttributeToList(attributesList, 'hat', randomItemList[4])
-        attributesList = AddAttributeToList(attributesList, 'glasses', randomItemList[3])
-        attributesList = AddAttributeToList(attributesList, 'cloth', randomItemList[2])
-        attributesList = AddAttributeToList(attributesList, 'pant', randomItemList[1])
-        attributesList = AddAttributeToList(attributesList, 'pet', randomItemList[0])
-        let tempMetadata = {
-            name: 'nft_pet',
-            description: 'this is cool',
-            image: ipfs_path,
-            local_image: `http://${ipAddress}:${port}/build/${localPath}.png`,
-            attributes: attributesList,
-        };
-        await saveMetadata(tempMetadata, localPath)
+        await Combine(randomItemList, i)
+        let ipfsPath = await UploadFileToIpfs(`${basePath}/public/build/${i}.png`)
+        let attributesList = GetAttributeList(randomItemList)
+        let tempMetadata = GetNFTMetadata('nft_pet', 'it is a cool pet', i, ipfsPath, GetBuildImagePath(i), attributesList)
+        await SaveMetadata(tempMetadata, i)
+        await GenerateComponentJson(randomItemList, _nftTotal, currentComponentStartIndex)
+        currentComponentStartIndex += 5
     }
 }
 
-const UploadAllImageToIpfsByDir = async (_dir, start) => {
+//將資料夾內的所有圖片上傳到ipfs
+const UploadAllImageToIpfsByDir = async (_dir, _start) => {
     var fs = require("fs")
-    var itemList = []
     fs.readdir(_dir, async (err, list) => {
-        itemList = list
-        for (let i = start; i < itemList.length; i++) {
-            await wait(1000)
+        var itemList = list
+        for (let i = _start; i < itemList.length; i++) {
+            await Wait(1000)
             var localPath = itemList[i]
-            let ipfs_path = await UploadFileToIpfs(`${_dir}/${localPath}`)
-            let tempMetadata = {
-                name: 'nft_item',
-                description: 'this is cool',
-                image: ipfs_path,
-                local_image: `http://${ipAddress}:${_dir}/${localPath}`
-            };
-            await saveMetadata(tempMetadata, `${i}`)
+            let ipfsPath = await UploadFileToIpfs(`${_dir}/${localPath}`)
+            console.log(`index: ${i}, item: ${localPath}, ipfs: ${ipfsPath}`)
         }
     })
 }
 
-module.exports = { Combine }
+//根據給定的配件表以及token的global資訊來產生配件json
+const GenerateComponentJson = async (_itemList, _nftTotal, _componentStartIndex) => {
+    const itemName = ['pet', 'pant', 'cloth', 'glasses', 'hat', 'hand']
+    var newOrder = [4, 3, 5, 1, 2]
+    for (let i = 0; i < newOrder.length; i++) {
+        var tokenId = _nftTotal + _componentStartIndex + i
+        var index = newOrder[i]
+        var tempMetadata = GetComponentsMetadata(itemName[index], 'component', tokenId, componentIpfs[_itemList[index]], GetPublicImagePath(_itemList[index]))
+        await SaveMetadata(tempMetadata, tokenId)
+    }
+}
 
+//根據給定的item編號生成nft
+const GenerateSingleNFT = async (_itemList, _name, _description, _tokenId, _nftTotal, _componentStartIndex) => {
+    await Combine(_itemList, _tokenId)
+    let ipfsPath = await UploadFileToIpfs(`${basePath}/public/build/${_tokenId}.png`)
+    let attributesList = GetAttributeList(_itemList)
+    let tempMetadata = GetNFTMetadata(_name, _description, _tokenId, ipfsPath, GetBuildImagePath(_tokenId), attributesList)
+    await SaveMetadata(tempMetadata, _tokenId)
+    await GenerateComponentJson(_itemList, _nftTotal, _componentStartIndex)
+}
 
-//GetRandomNFT(2)
-UploadAllImageToIpfsByDir(`${basePath}/public/image`, 9)
+module.exports = { Combine, UploadAllImageToIpfsByDir, GetRandomNFT, GetBuildImagePath, GetNFTMetadata }
+
+//GetRandomNFT(5, 10, 100, 25)
+//GenerateSingleNFT(['pet_1', 'pant_0', 'cloth_1', 'glasses_0', 'hat_1', 'hand_0'], 'nft_pet', 'it is a cool pat', 0, 100, 0)

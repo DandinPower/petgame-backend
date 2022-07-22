@@ -2,8 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const basePath = process.cwd();
 const { UploadFileToIpfs } = require(`${basePath}/models/ipfs`)
-const { Combine } = require(`${basePath}/models/canvas`)
-const { AddAttributeToList } = require(`${basePath}/models/function`)
+const { Combine, GetBuildImagePath, GetNFTMetadata } = require(`${basePath}/models/canvas`)
+const { AddAttributeToList, GetAttributeList } = require(`${basePath}/models/function`)
 const router = express.Router()
 const ipAddress = process.env.IP_ADDRESS
 const port = process.env.PORT
@@ -15,22 +15,12 @@ router.post('/', async (req, res, next) => {
     var cloth = req.body.cloth
     var pant = req.body.pant
     var pet = req.body.pet
-    var localPath = await Combine([pet, pant, cloth, glasses, hat, hand])
-    let ipfs_path = await UploadFileToIpfs(`${basePath}/public/build/${localPath}.png`)
-    let attributesList = []
-    attributesList = AddAttributeToList(attributesList, 'hand', hand)
-    attributesList = AddAttributeToList(attributesList, 'hat', hat)
-    attributesList = AddAttributeToList(attributesList, 'glasses', glasses)
-    attributesList = AddAttributeToList(attributesList, 'cloth', cloth)
-    attributesList = AddAttributeToList(attributesList, 'pant', pant)
-    attributesList = AddAttributeToList(attributesList, 'pet', pet)
-    let tempMetadata = {
-        name: 'nft_pet',
-        description: 'this is cool',
-        image: ipfs_path,
-        local_image: `http://${ipAddress}:${port}/build/${localPath}.png`,
-        attributes: attributesList,
-    };
+    var tokenId = req.body.tokenId
+    var itemList = [pet, pant, cloth, glasses, hat, hand]
+    await Combine(itemList, tokenId)
+    let ipfsPath = await UploadFileToIpfs(`${basePath}/public/build/${tokenId}.png`)
+    let attributesList = GetAttributeList(itemList)
+    let tempMetadata = GetNFTMetadata('nft_pet', 'it is a cool pet', tokenId, ipfsPath, GetBuildImagePath(tokenId), attributesList)
     res.json(tempMetadata)
 })
 

@@ -53,7 +53,8 @@ describe('combine test', async () => {
                 "glasses": "none",
                 "cloth": "cloth_0",
                 "pant": "none",
-                "pet": "pet_1"
+                "pet": "pet_1",
+                'tokenId': 0
             })
             .end((err, res) => {
                 assert.equal(200, res.status)

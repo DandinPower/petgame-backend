@@ -1,10 +1,13 @@
 require('dotenv').config()
+const fs = require("fs");
+const basePath = process.cwd()
 const Moralis = require("moralis/node")
 const serverUrl = process.env.DAPP_URL
 const appId = process.env.APP_ID
 const masterKey = process.env.MASTER_KEY
 
-const InsertData = async (className, newObjectJson) => {
+//插入資料庫
+const InsertData = async (_className, _newObjectJson) => {
     await Moralis.start({ serverUrl, appId, masterKey })
     const Class = Moralis.Object.extend(className)
     const newClass = new Class()
@@ -14,9 +17,10 @@ const InsertData = async (className, newObjectJson) => {
     await newClass.save()
 }
 
-const FindQuery = async (className) => {
+//查詢資料庫
+const FindQuery = async (_className) => {
     await Moralis.start({ serverUrl, appId, masterKey })
-    const Class = Moralis.Object.extend(className)
+    const Class = Moralis.Object.extend(_className)
     const query = new Moralis.Query(Class)
     query.limit(25)
     const object = await query.find()
@@ -24,9 +28,10 @@ const FindQuery = async (className) => {
     //console.log(object.get('height'))
 };
 
-const DeleteQuery = async (className) => {
+//刪除資料庫
+const DeleteQuery = async (_className) => {
     await Moralis.start({ serverUrl, appId, masterKey })
-    const Class = Moralis.Object.extend(className)
+    const Class = Moralis.Object.extend(_className)
     const query = new Moralis.Query(Class)
     const object = await query.first()
     if (object) {
@@ -38,9 +43,10 @@ const DeleteQuery = async (className) => {
     }
 }
 
-const UpdateData = async (className) => {
+//更新資料庫
+const UpdateData = async (_className) => {
     await Moralis.start({ serverUrl, appId, masterKey })
-    const Class = Moralis.Object.extend(className)
+    const Class = Moralis.Object.extend(_className)
     const query = new Moralis.Query(Class)
     const object = await query.first()
     if (object) {
@@ -53,4 +59,26 @@ const UpdateData = async (className) => {
     }
 }
 
-module.exports = { InsertData }
+//取得morails的連線
+const GetMorailsConnection = async () => {
+    await Moralis.start({ serverUrl, appId, masterKey })
+    return Moralis
+}
+
+//測試中
+const UploadFileToMoralisIpfs = async () => {
+    await Moralis.start({ serverUrl, appId, masterKey })
+    const object = {
+        key: "value",
+    };
+    const json = { "a": 1, "b": 2 }
+    const string = JSON.stringify(json) // convert Object to a String
+    const encodedString = btoa(string)
+    console.log(encodedString)
+    const file = new Moralis.File("file.json", {
+        base64: btoa(JSON.stringify(object)),
+    });
+    await file.saveIPFS();
+}
+
+module.exports = { InsertData, GetMorailsConnection }
