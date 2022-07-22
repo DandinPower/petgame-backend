@@ -8,6 +8,7 @@ const router = express.Router()
 const ipAddress = process.env.IP_ADDRESS
 const port = process.env.PORT
 
+//基本組圖功能
 router.post('/', async (req, res, next) => {
     var hand = req.body.hand
     var hat = req.body.hat

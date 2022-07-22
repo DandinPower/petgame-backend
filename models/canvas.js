@@ -9,19 +9,19 @@ const { AddAttributeToList, GetAttributeList, GetRandomFromList, GetRandomItemLi
 const buildDir = `${basePath}/public/build`
 const componentDir = `${basePath}/public/image`
 const componentIpfs = {
-    'cloth_0': 'https://ipfs.io/ipfs/QmYZzxgkb5st8h6JDyYym3uuHxeNtWcxQ68FEDxBWQbEKj',
-    'cloth_1': 'https://ipfs.io/ipfs/QmVFM3NVyhQwSpoUfvi9tvQdY2Cip3XU82Tj3Y3GhfXow3',
-    'glasses_0': 'https://ipfs.io/ipfs/QmWvbcRVUG49DHhzDo61FdeGhZhj1fxjBkeYP5bWiWTrAY',
-    'glasses_1': 'https://ipfs.io/ipfs/QmZJugaT5jqaMv8zLZeR2hRzknm33yGo6Q2p8UAU1E84jr',
+    'cloth_0': 'https://ipfs.io/ipfs/QmZuvu8xHU2M24BCbA3jQNysAZQud7hdpgPZ7mnkw5S5sP',
+    'cloth_1': 'https://ipfs.io/ipfs/Qme8CPj7mAdbSWpAxuXjS1K6sBJEPSUrE9jsFyFWYPU5nc',
+    'glasses_0': 'https://ipfs.io/ipfs/QmUsrkgcK9schvx54TVJz11PCqBdYWPkxzUxAU1M4cPnzz',
+    'glasses_1': 'https://ipfs.io/ipfs/QmaAy8QxUdW1KNhhf39hcnX6viuP9EXx4ionpTvw1x6fBr',
     'hand_0': 'https://ipfs.io/ipfs/QmfFqHZnMEiS9fbSENadjppSHgMmFYX5FhjNsEDtdTzHNj',
     'hand_1': 'https://ipfs.io/ipfs/Qmd6zBhXzUn4VBiXDLTWgsLuUHM276MKg38sRCfVc2sqfm',
     'hat_0': 'https://ipfs.io/ipfs/QmVxvawprLNnYX6mRUxMoFsCVreh59qeocLJLVAVBJr37s',
     'hat_1': 'https://ipfs.io/ipfs/QmV8EeENBbaMDtT6P3RGtwNEKpzg9kEFeDgCJ5ZGMkxqB8',
     'none': 'https://ipfs.io/ipfs/QmSNZs6NQpbQccdrtXpmrRp2BmhWThvLsHgrHbAnEBFiH1',
-    'pant_0': 'https://ipfs.io/ipfs/QmV3iX4NJYHoHcMSdL55NCMLjm5X3v2E63exPsJortFUsf',
-    'pant_1': 'https://ipfs.io/ipfs/QmQZKpxMK2wJ57Cq5yxMhqDXDUg4foR9coCFpN91rBB4nH',
-    'pet_0': 'https://ipfs.io/ipfs/QmRGhsSspxKnwpDCRYCWw7g7WznCyuApcx1VqkWGiyXSny',
-    'pet_1': 'https://ipfs.io/ipfs/QmUhoCfGLJ317i7j5pa3nVbQYC7gYTGj7jqG1iuypp2W9A'
+    'pant_0': 'https://ipfs.io/ipfs/QmakKgBWsPhoGQf66bcxYt24bi2sG3XFZt4xtnyeUcPzqX',
+    'pant_1': 'https://ipfs.io/ipfs/QmZ5TxsuyPt6ZvdAyy3oYfnK7SVFQgNG3QXk3Wc9Mcs6FF',
+    'pet_0': 'https://ipfs.io/ipfs/QmWrp9SeppmcHmh9zcGpRinsJRRwR3rcf8gXK2NFVBEp3p',
+    'pet_1': 'https://ipfs.io/ipfs/QmTuN3sjxDWALmZ8RWBkRYwfkVNx8mEAJReVoADGz3JDPv'
 }
 const ipAddress = process.env.IP_ADDRESS
 const port = process.env.PORT
@@ -168,5 +168,6 @@ const GenerateSingleNFT = async (_itemList, _name, _description, _tokenId, _nftT
 
 module.exports = { Combine, UploadAllImageToIpfsByDir, GetRandomNFT, GetBuildImagePath, GetNFTMetadata }
 
-//GetRandomNFT(5, 10, 100, 25)
+//UploadAllImageToIpfsByDir(componentDir, 10)
+//GetRandomNFT(0, 10, 100, 0)
 //GenerateSingleNFT(['pet_1', 'pant_0', 'cloth_1', 'glasses_0', 'hat_1', 'hand_0'], 'nft_pet', 'it is a cool pat', 0, 100, 0)
