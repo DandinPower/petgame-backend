@@ -8,20 +8,21 @@ const { UploadFileToIpfs } = require(`${basePath}/models/ipfs`)
 const { AddAttributeToList, GetAttributeList, GetRandomFromList, GetRandomItemList, GetRandomName, Wait } = require(`${basePath}/models/function`)
 const buildDir = `${basePath}/public/build`
 const componentDir = `${basePath}/public/image`
+
 const componentIpfs = {
-    'cloth_0': 'https://ipfs.io/ipfs/QmZuvu8xHU2M24BCbA3jQNysAZQud7hdpgPZ7mnkw5S5sP',
-    'cloth_1': 'https://ipfs.io/ipfs/Qme8CPj7mAdbSWpAxuXjS1K6sBJEPSUrE9jsFyFWYPU5nc',
-    'glasses_0': 'https://ipfs.io/ipfs/QmUsrkgcK9schvx54TVJz11PCqBdYWPkxzUxAU1M4cPnzz',
-    'glasses_1': 'https://ipfs.io/ipfs/QmaAy8QxUdW1KNhhf39hcnX6viuP9EXx4ionpTvw1x6fBr',
+    'cloth_0': 'https://ipfs.io/ipfs/QmcgUMSF4TK8U1wkBqguxvm7jBaUdMq9EkapB9YbqHbwMH',
+    'cloth_1': 'https://ipfs.io/ipfs/QmYhL3pXPnbNxzbvP7qYoRYx5RTY4A3EyBU4PcqwJzSFf1',
+    'glasses_0': 'https://ipfs.io/ipfs/QmWvbcRVUG49DHhzDo61FdeGhZhj1fxjBkeYP5bWiWTrAY',
+    'glasses_1': 'https://ipfs.io/ipfs/QmZJugaT5jqaMv8zLZeR2hRzknm33yGo6Q2p8UAU1E84jr',
     'hand_0': 'https://ipfs.io/ipfs/QmfFqHZnMEiS9fbSENadjppSHgMmFYX5FhjNsEDtdTzHNj',
     'hand_1': 'https://ipfs.io/ipfs/Qmd6zBhXzUn4VBiXDLTWgsLuUHM276MKg38sRCfVc2sqfm',
     'hat_0': 'https://ipfs.io/ipfs/QmVxvawprLNnYX6mRUxMoFsCVreh59qeocLJLVAVBJr37s',
     'hat_1': 'https://ipfs.io/ipfs/QmV8EeENBbaMDtT6P3RGtwNEKpzg9kEFeDgCJ5ZGMkxqB8',
     'none': 'https://ipfs.io/ipfs/QmSNZs6NQpbQccdrtXpmrRp2BmhWThvLsHgrHbAnEBFiH1',
-    'pant_0': 'https://ipfs.io/ipfs/QmakKgBWsPhoGQf66bcxYt24bi2sG3XFZt4xtnyeUcPzqX',
-    'pant_1': 'https://ipfs.io/ipfs/QmZ5TxsuyPt6ZvdAyy3oYfnK7SVFQgNG3QXk3Wc9Mcs6FF',
-    'pet_0': 'https://ipfs.io/ipfs/QmWrp9SeppmcHmh9zcGpRinsJRRwR3rcf8gXK2NFVBEp3p',
-    'pet_1': 'https://ipfs.io/ipfs/QmTuN3sjxDWALmZ8RWBkRYwfkVNx8mEAJReVoADGz3JDPv'
+    'pant_0': 'https://ipfs.io/ipfs/QmXzmeDZ6Kd7gLV3Yw8ynvLF4MfyAUhrE6Xj5WCe76CupY',
+    'pant_1': 'https://ipfs.io/ipfs/QmSWSakdxHGrgmbLGt5vw33jkCvtUMBFEh1Gh4o61cbPL5',
+    'pet_0': 'https://ipfs.io/ipfs/QmRGhsSspxKnwpDCRYCWw7g7WznCyuApcx1VqkWGiyXSny',
+    'pet_1': 'https://ipfs.io/ipfs/QmUhoCfGLJ317i7j5pa3nVbQYC7gYTGj7jqG1iuypp2W9A'
 }
 const ipAddress = process.env.IP_ADDRESS
 const port = process.env.PORT
@@ -139,7 +140,7 @@ const UploadAllImageToIpfsByDir = async (_dir, _start) => {
             await Wait(1000)
             var localPath = itemList[i]
             let ipfsPath = await UploadFileToIpfs(`${_dir}/${localPath}`)
-            console.log(`index: ${i}, item: ${localPath}, ipfs: ${ipfsPath}`)
+            console.log(`'${localPath.replace('.png', '')}' : '${ipfsPath}',`)
         }
     })
 }
@@ -168,6 +169,6 @@ const GenerateSingleNFT = async (_itemList, _name, _description, _tokenId, _nftT
 
 module.exports = { Combine, UploadAllImageToIpfsByDir, GetRandomNFT, GetBuildImagePath, GetNFTMetadata }
 
-//UploadAllImageToIpfsByDir(componentDir, 10)
-//GetRandomNFT(0, 10, 100, 0)
+//UploadAllImageToIpfsByDir(componentDir, 8)
+//GetRandomNFT(8, 10, 100, 40)
 //GenerateSingleNFT(['pet_1', 'pant_0', 'cloth_1', 'glasses_0', 'hat_1', 'hand_0'], 'nft_pet', 'it is a cool pat', 0, 100, 0)
