@@ -5,7 +5,7 @@ const { listenerCount } = require("process")
 const basePath = process.cwd()
 const { createCanvas, loadImage } = require(`${basePath}/node_modules/canvas`)
 const { UploadFileToIpfs } = require(`${basePath}/models/ipfs`)
-const { AddAttributeToList, GetAttributeList, GetRandomFromList, GetRandomItemList, GetRandomName, Wait } = require(`${basePath}/models/function`)
+const { AddAttributeToList, GetAttributeList, GetRandomFromList, GetRandomItemList, GetRandomName, Wait, GetRandomItemListWithNone } = require(`${basePath}/models/function`)
 const buildDir = `${basePath}/public/build`
 const componentDir = `${basePath}/public/image`
 
@@ -131,6 +131,14 @@ const GetRandomNFT = async (_tokenStart, _tokenEnd, _nftTotal, _componentStartIn
     }
 }
 
+//產生隨機的nft以及其配件
+const GetRandomNFTWithNone = async (_generateNum) => {
+    for (let i = 0; i < _generateNum; i++) {
+        var randomItemList = GetRandomItemListWithNone()
+        await Combine(randomItemList, i)
+    }
+}
+
 //將資料夾內的所有圖片上傳到ipfs
 const UploadAllImageToIpfsByDir = async (_dir, _start) => {
     var fs = require("fs")
@@ -172,3 +180,4 @@ module.exports = { Combine, UploadAllImageToIpfsByDir, GetRandomNFT, GetBuildIma
 //UploadAllImageToIpfsByDir(componentDir, 8)
 //GetRandomNFT(8, 10, 100, 40)
 //GenerateSingleNFT(['pet_1', 'pant_0', 'cloth_1', 'glasses_0', 'hat_1', 'hand_0'], 'nft_pet', 'it is a cool pat', 0, 100, 0)
+//GetRandomNFTWithNone(10)

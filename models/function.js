@@ -47,4 +47,15 @@ const GetRandomItemList = () => {
     return [GetRandomFromList(petList), GetRandomFromList(pantList), GetRandomFromList(clothList), GetRandomFromList(glassesList), GetRandomFromList(hatList), GetRandomFromList(handList)]
 }
 
-module.exports = { AddAttributeToList, GetAttributeList, GetRandomName, GetRandomFromList, GetRandomItemList, Wait }
+//隨機的取出一隻寵物的物件配對
+const GetRandomItemListWithNone = () => {
+    var handList = ['hand_0', 'hand_1', 'none']
+    var hatList = ['hat_0', 'hat_1', 'none']
+    var glassesList = ['glasses_0', 'glasses_1', 'none']
+    var clothList = ['cloth_0', 'cloth_1', 'none']
+    var pantList = ['pant_0', 'pant_1', 'none']
+    var petList = ['pet_0', 'pet_1']
+    return [GetRandomFromList(petList), GetRandomFromList(pantList), GetRandomFromList(clothList), GetRandomFromList(glassesList), GetRandomFromList(hatList), GetRandomFromList(handList)]
+}
+
+module.exports = { AddAttributeToList, GetAttributeList, GetRandomName, GetRandomFromList, GetRandomItemList, Wait, GetRandomItemListWithNone }
